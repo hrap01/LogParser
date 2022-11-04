@@ -47,6 +47,7 @@ class LogEntryProcess:
     def filter_according_severity(self):
 
 
+
     def filter_according_logger_name(self):
 
 
