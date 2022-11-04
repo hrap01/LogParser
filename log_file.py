@@ -31,6 +31,7 @@ class SeverityEnum(Enum):
     WARNING = 'warning'
     ERROR = 'error'
 
+
 class LogEntry:
     def __init__(self, timestamp: datetime, severity: SeverityEnum, logger_name: str, message: str):
         self.timestamp = timestamp
