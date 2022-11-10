@@ -1,10 +1,10 @@
 2022-10-27 11:14:08,757 - mf - INFO - Using configuration 'DefaultConfig'
-2022-10-27 11:14:08,758 - mf - DEBUG - Using specified axis filter 'All'
+2022-10-27 11:14:08,758 - mf - DEBUG - Using specified axis filter - 'All'
 2022-10-27 11:14:08,758 - mf - INFO - Parameters: None specified
-2022-10-27 11:14:08,842 - mf - INFO - Makefile version: N/A (/opt/homebrew/lib/python3.9/site-packages/qauto/makefile)
-2022-10-27 11:14:08,842 - mf - DEBUG - Makefile launch command: /opt/homebrew/opt/python@3.9/bin/python3.9 /Users/tomas.danek/space/sources/test_makefiles/mf_simple.py
+2022-10-27 11:14:08,842 - mf - INFO - Makefile version: N/A (/makefile)
+2022-10-27 11:14:08,842 - mf - DEBUG - Makefile launch command: /test_makefiles/mf_simple.py
 2022-10-27 11:14:08,846 - lm_factory - DEBUG - Setting 'LabManager' class
-2022-10-27 11:14:08,846 - mf - DEBUG - Combinations count: 1, Pool size: 25
+2022-10-27 11:14:08,846 - mf - DEBUG - Combinations count: 1, Pool size: 2
 2022-10-27 13:26:19,258 - mf - DEBUG - Execution of 'M1' finished after 2:12:10s.
 2022-10-27 13:26:19,259 - mf - INFO -        ___  ___      _         __ _ _                            _ _         
 2022-10-27 13:26:19,259 - mf - INFO -        |  \/  |     | |       / _(_) |                          | | |        
@@ -18,8 +18,8 @@
 2022-10-27 13:26:19,260 - mf - INFO - | M1               | FINISHED                                                 |
 2022-10-27 13:26:19,260 - mf - INFO - +------------------+----------------------------------------------------------+
 2022-10-27 13:26:19,274 - mf - DEBUG - No C4 XMLs found.
-2022-10-27 13:26:19,275 - Formatter - DEBUG - File "/Users/tomas.danek/space/sources/test_makefiles/results/makefile_result.xml" was loaded
-2022-10-27 13:26:19,285 - mf - INFO - HTML report: /Users/tomas.danek/space/sources/test_makefiles/results/result.html
+2022-10-27 13:26:19,275 - Formatter - DEBUG - File "test_makefiles/results/makefile_result.xml" was loaded
+2022-10-27 13:26:19,285 - mf - INFO - HTML report: test_makefiles/results/result.html
 2022-10-27 13:26:19,285 - mf - DEBUG - Exit code: 0
 2022-10-27 13:26:19,288 - c4 - DEBUG - -> collect_logs_and_dump_json()
 2022-10-27 13:26:19,288 - c4 - DEBUG - <- collect_logs_and_dump_json(): defaultdict(<class 'list'>, {})
