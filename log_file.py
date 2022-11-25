@@ -23,7 +23,7 @@
 
 from enum import Enum, auto
 from datetime import datetime
-
+from pprint import pprint
 
 class SeverityEnum(Enum):
     INFO = 'info'
@@ -39,62 +39,75 @@ class LogEntry:
         self.logger_name = logger_name
         self.message = message
 
+    def __repr__(self):
+        return f'{self.timestamp} - {self.severity.value} - {self.logger_name} - {self.message}'
 
-# parse() method; it will "transform" the log file into the list of LogEntry instances (kept inside
-# the LogEntryProcessor instance)
-# get_entries() - returns the list of LogEntry instances. Should indicate error in case parse() was not performed yet.
-#
 
 class LogEntryProcess:
     def __init__(self, file_name):
         self.file_name = file_name
-        self.log_entries_list = []
+        self.log_entries_list = None
 
     def parse(self):
+        self.log_entries_list = []
         with open(file=self.file_name, mode='r', encoding='utf-8') as f:
             for line in f:
                 line = line.rstrip('\n')
                 split_line = line.split(' - ', maxsplit=3) #regulární výrazy robustnější řešení
-                if len(split_line) > 4:
-                    raise ValueError('Line was split more than 3 times.')
-                timestamp = datetime.strptime(split_line[0], '%Y-%m-%d %H:%M:%S,%f')
-                severity = SeverityEnum[split_line[2]]
-                if isinstance(severity, SeverityEnum) is False:
-                    raise ValueError('Expected type in SeverityEnum')
-                logger_name = split_line[1]
+                if len(split_line) != 4:
+                    raise ValueError(f'Line was split different times than 3 times. Line {split_line}.')
+                timestamp = (datetime.strptime(split_line[0], '%Y-%m-%d %H:%M:%S,%f'))
+                severity = (SeverityEnum[split_line[2]])
+                #if isinstance(severity, SeverityEnum) is False:
+                #    raise ValueError('Expected type in SeverityEnum')
+                logger_name = (split_line[1])
                 message = split_line[3]
 
-                LogEntry(timestamp=timestamp, severity=severity, logger_name=logger_name, message=message)
+                instance_of_log_entry = LogEntry(timestamp=timestamp, severity=severity, logger_name=logger_name, message=message)
+                self.log_entries_list.append(instance_of_log_entry)
 
-                #print(timestamp, severity, logger_name, message)
+    def get_entries(self) -> list:
+        if self.log_entries_list is None:
+            raise RuntimeError('Please call parse method first.')
+        return self.log_entries_list.copy()
 
+    def filter_according_logger_name(self, logger_name: str) -> list:
+        filter_logger_name_list = []
+        for log_entry in self.log_entries_list:
+            if log_entry.logger_name == logger_name:
+                filter_logger_name_list.append(log_entry)
+        return filter_logger_name_list
+
+    def filter_according_severity(self, severity_info: SeverityEnum) -> list:
+        filter_severity_list = []
+        for log_entry in self.log_entries_list:
+            if log_entry.severity.value == severity_info:
+                filter_severity_list.append(log_entry)
+        return filter_severity_list
+
+    # 	nejak to zaokouhlit,aby člověk nemusel zadávat i milisekundy?
+    def filter_according_timestamp(self, timestamp_info: datetime) -> list:
+        filter_timestamp_list = []
+        for log_entry in self.log_entries_list:
+            if log_entry.timestamp > (datetime.strptime(timestamp_info, '%Y-%m-%d %H:%M:%S,%f')):
+                filter_timestamp_list.append(log_entry)
+        return filter_timestamp_list
+
+    def filter_containing_substring(self, substring_info: str) -> list:
+        filter_substring_list = []
+        for log_entry in self.log_entries_list:
+            if substring_info in log_entry.message:
+                filter_substring_list.append(log_entry)
+        return filter_substring_list
 
 
 a = LogEntryProcess('makefile.log')
 a.parse()
-
-
-
-    #
-    #
-    # def get_entries(self) -> list:
-    #     # TODO Should indicate error in case parse() was not performed yet.
-    #     return self.log_entries_list
-    #
-    #
-    #
-    # def filter_according_severity(self):
-    #
-    #
-    #
-    # def filter_according_logger_name(self):
-    #
-    #
-    # def filer_containing_substring(self):
-    #
-    #
-    # def filer_according_timestamp(self):
-    #
+#pprint(a.get_entries())
+#pprint(a.filter_according_logger_name('mf'))
+#pprint(a.filter_according_severity('info'))
+#pprint(a.filter_according_timestamp('2022-10-27 13:26:19,274'))
+pprint(a.filter_containing_substring('-'))
 
 
 
