@@ -85,11 +85,10 @@ class LogEntryProcess:
                 filter_severity_list.append(log_entry)
         return filter_severity_list
 
-    # 	nejak to zaokouhlit,aby člověk nemusel zadávat i milisekundy?
-    def filter_according_timestamp(self, timestamp_info: datetime) -> list:
+    def filter_newer_entries(self, timestamp_info: datetime) -> list:
         filter_timestamp_list = []
         for log_entry in self.log_entries_list:
-            if log_entry.timestamp > (datetime.strptime(timestamp_info, '%Y-%m-%d %H:%M:%S,%f')):
+            if log_entry.timestamp > timestamp_info:
                 filter_timestamp_list.append(log_entry)
         return filter_timestamp_list
 
@@ -106,8 +105,9 @@ a.parse()
 #pprint(a.get_entries())
 #pprint(a.filter_according_logger_name('mf'))
 #pprint(a.filter_according_severity('info'))
-#pprint(a.filter_according_timestamp('2022-10-27 13:26:19,274'))
-pprint(a.filter_containing_substring('-'))
+timestamp = datetime(2022, 10, 27, 13, 26, 19)
+pprint(a.filter_newer_entries(timestamp))
+#pprint(a.filter_containing_substring('-'))
 
 
 
