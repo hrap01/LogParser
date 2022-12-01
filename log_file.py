@@ -1,3 +1,4 @@
+from __future__ import annotations
 # Our systems produce various types of logs. The objective of this task is to write a simple parser
 # Part 1
 # 	•	Take a look at sample.log file and its structure
@@ -43,71 +44,68 @@ class LogEntry:
         return f'{self.timestamp} - {self.severity.value} - {self.logger_name} - {self.message}'
 
 
-class LogEntryProcess:
-    def __init__(self, file_name):
-        self.file_name = file_name
-        self.log_entries_list = None
+class LogEntryList(list):
+    # def get_entries(self) -> list:
+    #     if self.log_entries_list is None:
+    #         raise RuntimeError('Please call parse method first.')
+    #     return self.log_entries_list.copy()
 
-    def parse(self):
-        self.log_entries_list = []
-        with open(file=self.file_name, mode='r', encoding='utf-8') as f:
-            for line in f:
-                line = line.rstrip('\n')
-                split_line = line.split(' - ', maxsplit=3) #regulární výrazy robustnější řešení
-                if len(split_line) != 4:
-                    raise ValueError(f'Line was split different times than 3 times. Line {split_line}.')
-                timestamp = (datetime.strptime(split_line[0], '%Y-%m-%d %H:%M:%S,%f'))
-                severity = (SeverityEnum[split_line[2]])
-                #if isinstance(severity, SeverityEnum) is False:
-                #    raise ValueError('Expected type in SeverityEnum')
-                logger_name = (split_line[1])
-                message = split_line[3]
-
-                instance_of_log_entry = LogEntry(timestamp=timestamp, severity=severity, logger_name=logger_name, message=message)
-                self.log_entries_list.append(instance_of_log_entry)
-
-    def get_entries(self) -> list:
-        if self.log_entries_list is None:
-            raise RuntimeError('Please call parse method first.')
-        return self.log_entries_list.copy()
-
-    def filter_according_logger_name(self, logger_name: str) -> list:
-        filter_logger_name_list = []
-        for log_entry in self.log_entries_list:
+    def filter_according_logger_name(self, logger_name: str) -> LogEntryList:
+        filter_logger_name_list = LogEntryList()
+        for log_entry in self:
             if log_entry.logger_name == logger_name:
                 filter_logger_name_list.append(log_entry)
         return filter_logger_name_list
 
-    def filter_according_severity(self, severity_info: SeverityEnum) -> list:
-        filter_severity_list = []
-        for log_entry in self.log_entries_list:
+    def filter_according_severity(self, severity_info: SeverityEnum) -> LogEntryList:
+        filter_severity_list = LogEntryList()
+        for log_entry in self:
             if log_entry.severity.value == severity_info:
                 filter_severity_list.append(log_entry)
         return filter_severity_list
 
-    # 	nejak to zaokouhlit,aby člověk nemusel zadávat i milisekundy?
-    def filter_according_timestamp(self, timestamp_info: datetime) -> list:
-        filter_timestamp_list = []
-        for log_entry in self.log_entries_list:
-            if log_entry.timestamp > (datetime.strptime(timestamp_info, '%Y-%m-%d %H:%M:%S,%f')):
+    def filter_newer_entries(self, timestamp_info: datetime) -> LogEntryList:
+        filter_timestamp_list = LogEntryList()
+        for log_entry in self:
+            if log_entry.timestamp > timestamp_info:
                 filter_timestamp_list.append(log_entry)
         return filter_timestamp_list
 
-    def filter_containing_substring(self, substring_info: str) -> list:
-        filter_substring_list = []
-        for log_entry in self.log_entries_list:
+    def filter_containing_substring(self, substring_info: str) -> LogEntryList:
+        filter_substring_list = LogEntryList()
+        for log_entry in self:
             if substring_info in log_entry.message:
                 filter_substring_list.append(log_entry)
         return filter_substring_list
 
 
-a = LogEntryProcess('makefile.log')
-a.parse()
+def parse(file_name: str) -> LogEntryList:
+    log_entries_list = LogEntryList()
+    with open(file=file_name, mode='r', encoding='utf-8') as f:
+        for line in f:
+            line = line.rstrip('\n')
+            split_line = line.split(' - ', maxsplit=3) #regulární výrazy robustnější řešení
+            if len(split_line) != 4:
+                raise ValueError(f'Line was split different times than 3 times. Line {split_line}.')
+            timestamp = (datetime.strptime(split_line[0], '%Y-%m-%d %H:%M:%S,%f'))
+            severity = (SeverityEnum[split_line[2]])
+            #if isinstance(severity, SeverityEnum) is False:
+            #    raise ValueError('Expected type in SeverityEnum')
+            logger_name = (split_line[1])
+            message = split_line[3]
+
+            instance_of_log_entry = LogEntry(timestamp=timestamp, severity=severity, logger_name=logger_name, message=message)
+            log_entries_list.append(instance_of_log_entry)
+    return log_entries_list
+
+timestamp = datetime(2022, 10, 27, 13, 26, 19)
+a = parse('makefile.log')
 #pprint(a.get_entries())
-#pprint(a.filter_according_logger_name('mf'))
+pprint(a.filter_according_logger_name('mf').filter_newer_entries(timestamp).filter_according_severity('debug'))
 #pprint(a.filter_according_severity('info'))
-#pprint(a.filter_according_timestamp('2022-10-27 13:26:19,274'))
-pprint(a.filter_containing_substring('-'))
+
+#pprint(a.filter_newer_entries(timestamp))
+#pprint(a.filter_containing_substring('-'))
 
 
 
