@@ -89,8 +89,6 @@ def parse(file_name: str) -> LogEntryList:
                 raise ValueError(f'Line was split different times than 3 times. Line {split_line}.')
             timestamp = (datetime.strptime(split_line[0], '%Y-%m-%d %H:%M:%S,%f'))
             severity = (SeverityEnum[split_line[2]])
-            #if isinstance(severity, SeverityEnum) is False:
-            #    raise ValueError('Expected type in SeverityEnum')
             logger_name = (split_line[1])
             message = split_line[3]
 
@@ -106,6 +104,12 @@ pprint(a.filter_according_logger_name('mf').filter_newer_entries(timestamp).filt
 
 #pprint(a.filter_newer_entries(timestamp))
 #pprint(a.filter_containing_substring('-'))
-
+#
+# import re
+#
+# text = '2022-10-27 11:14:08,757 - mf - INFO - Using configuration DefaultConfig'
+#
+# a = (re.search(r'[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2},[0-9]{3} - [a-zA-Z]*? - [a-zA-Z]*? - .*?', text))
+# print(a.group())
 
 
